@@ -1,0 +1,28 @@
+{
+  "computeEnvironmentName": "M4Spot",
+  "type": "MANAGED",
+  "state": "ENABLED",
+  "computeResources": {
+    "type": "EC2",
+    "minvCpus": 0,
+    "maxvCpus": 256,
+    "desiredvCpus": 0,
+    "instanceTypes": [
+      "m4"
+    ],
+    "subnets": [
+      "subnet-220c0e0a",
+      "subnet-1a95556d",
+      "subnet-978f6dce"
+    ],
+    "securityGroupIds": [
+      "sg-cf5093b2"
+    ],
+    "ec2KeyPair": "vt_its",
+    "instanceRole": "ecsInstanceRole",
+    "tags": {
+      "Name": "IIIF"
+    }
+  },
+  "serviceRole": "arn:aws:iam::012345678910:role/AWSBatchServiceRole"
+}

@@ -1,0 +1,11 @@
+{
+  "priority": 10,
+  "state": "ENABLED",
+  "computeEnvironmentOrder": [
+    {
+      "computeEnvironment": "M4Spot",
+      "order": 1
+    }
+  ],
+  "jobQueueName": "IIIFqueue"
+}

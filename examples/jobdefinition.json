@@ -1,0 +1,21 @@
+{
+    "jobDefinitionName": "myjob",
+    "jobDefinitionArn": "arn:aws:batch:us-east-1:xxxxxx:job-definition/myjob:2",
+    "revision": 2,
+    "status": "ACTIVE",
+    "type": "container",
+    "parameters": {},
+    "containerProperties": {
+        "image": "yinlinchen/vtl:iiif",
+        "vcpus": 2,
+        "memory": 2000,
+        "command": [
+            "./createiiif.sh"
+        ],
+        "volumes": [],
+        "environment": [],
+        "mountPoints": [],
+        "ulimits": [],
+        "resourceRequirements": []
+    }
+}
