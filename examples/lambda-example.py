@@ -31,7 +31,6 @@ def lambda_handler(event, context):
             service_name='batch',
             region_name=region_name,
             endpoint_url='https://batch.'+ region_name +'.amazonaws.com')
-        # batch = boto3.client('batch')
 
         cloudwatch = boto3.client(
             service_name='logs',

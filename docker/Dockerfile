@@ -1,5 +1,7 @@
 FROM ruby:2.5
 
+LABEL maintainer="Yinlin Chen <ylchen@vt.edu>"
+
 WORKDIR /usr/local/iiif
 
 RUN apt-get update && apt-get install -y imagemagick awscli
