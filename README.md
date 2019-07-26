@@ -36,7 +36,7 @@
 ## Task File
 * example: [task.json](examples/task.json)
 ```
-	jobName: Batch job name
+    jobName: Batch job name
     jobQueue: Batch job queue name
     jobDefinition: Batch job definition name
     command: "./createiiif.sh"
