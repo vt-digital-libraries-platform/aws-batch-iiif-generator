@@ -35,6 +35,21 @@
 
 ## Task File
 * example: [task.json](examples/task.json)
+```
+	jobName: Batch job name
+    jobQueue: Batch job queue name
+    jobDefinition: Batch job definition name
+    command: "./createiiif.sh"
+    AWS_REGION: AWS region, e.g. us-east-1
+    SRC_BUCKET: S3 bucket which stores the images need to be processed. (Source S3 bucket)
+    AWS_BUCKET_NAME: S3 bucket which stores the generated tile images and manifests files. (Target S3 bucket)
+    ACCESS_DIR: Path to the image folder under the SRC_BUCKET
+    CSV_NAME: A CSV file with title and description of the images
+    CSV_PATH: Path to the csv folder under the SRC_BUCKET
+    DEST_BUCKET: Folder to store the generated tile images and manifests files under AWS_BUCKET_NAME
+    DEST_URL: Root URL for accessing the manifests e.g. https://s3.amazonaws.com/AWS_BUCKET_NAME
+    UPLOAD_BOOL: upload tiles and manifests to S3 (true|false)
+```
 
 ## IIIF S3 Docker image
 * [iiif_s3_docker](docker)

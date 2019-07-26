@@ -1,7 +1,7 @@
 {
    "jobName":"job1",
-   "jobQueue":"IIIFqueue",
-   "jobDefinition":"myjob:2",
+   "jobQueue":"iiifjq",
+   "jobDefinition":"iiifjd:3",
    "command":"./createiiif.sh",
    "environment":[
       {
@@ -14,11 +14,11 @@
       },
       {
          "name":"SRC_BUCKET",
-         "value":"iawadata"
+         "value":"iawa-sample-data"
       },
       {
          "name":"AWS_BUCKET_NAME",
-         "value":"iawaiiif"
+         "value":"iawa-target-data"
       },
       {
          "name":"CSV_NAME",
@@ -38,7 +38,7 @@
       },
       {
          "name":"DEST_URL",
-         "value":"https://s3.amazonaws.com/iawaiiif"
+         "value":"https://s3.amazonaws.com/iawa-target-data"
       }
    ]
 }
