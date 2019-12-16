@@ -138,6 +138,10 @@ def createEnvList(content):
             value = env['value']
             region = {'name': 'AWS_REGION', 'value': value}
             envlist.append(region)
+        elif env['name'] == 'COLLECTION_NAME':
+            value = env['value']
+            collection_name = {'name': 'COLLECTION_NAME', 'value': value}
+            envlist.append(collection_name)
         elif env['name'] == 'UPLOAD_BOOL':
             value = env['value']
             upload = {'name': 'UPLOAD_BOOL', 'value': value}
@@ -166,9 +170,17 @@ def createEnvList(content):
             value = env['value']
             dest_bucket = {'name': 'DEST_BUCKET', 'value': value}
             envlist.append(dest_bucket)
+        elif env['name'] == 'DEST_PREFIX':
+            value = env['value']
+            dest_prefix = {'name': 'DEST_PREFIX', 'value': value}
+            envlist.append(dest_prefix)
         elif env['name'] == 'DEST_URL':
             value = env['value']
             dest_url = {'name': 'DEST_URL', 'value': value}
             envlist.append(dest_url)
+        elif env['name'] == 'DIR_PREFIX':
+            value = env['value']
+            dir_prefix = {'name': 'DIR_PREFIX', 'value': value}
+            envlist.append(dir_prefix)
 
     return envlist

@@ -1,6 +1,6 @@
 require 'iiif_s3'
 require 'open-uri'
-require_relative 'lib/iiif_s3/manifest_override'
+require_relative '../../lib/iiif_s3/manifest_override'
 IiifS3::Manifest.prepend IiifS3::ManifestOverride
 
 # Create directories on local disk for manifests/tiles to upload them to S3
