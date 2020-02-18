@@ -1,4 +1,6 @@
 # aws-batch-iiif-generator
+## Publication
+* [Code4Lib Journal - Scaling IIIF Image Tiling in the Cloud](https://journal.code4lib.org/articles/14933)
 
 ## Workflow
 ![Overview](images/overview.png "Overview")
