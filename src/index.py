@@ -5,8 +5,8 @@ import argparse
 import os
 import sys
 import time
-from datetime import datetime
 
+from datetime import datetime
 from botocore.compat import total_seconds
 
 print('Loading function')
@@ -14,19 +14,25 @@ print('Loading function')
 s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
+    inputFileName = ""
+    bucketName = ""
 
-    # Get the object from the event and show its content type
-    bucket = event['Records'][0]['s3']['bucket']['name']
-    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    for record in event['Records']:
+      bucketName = record['s3']['bucket']['name']
+      inputFileName = record['s3']['object']['key']
+
+    print(bucketName)
+    print(inputFileName)
+
     try:
-        response = s3.get_object(Bucket=bucket, Key=key)
+        response = s3.get_object(Bucket=bucketName, Key=inputFileName)
         print("CONTENT TYPE: " + response['ContentType'])
         filecontent = response['Body'].read().decode('utf-8')
         content = json.loads(filecontent)
         for envs in content['environment']:
             if envs['name'] == 'AWS_REGION':
                 region_name = envs['value']
-        
+
         batch = boto3.client(
             service_name='batch',
             region_name=region_name,
@@ -36,10 +42,10 @@ def lambda_handler(event, context):
             service_name='logs',
             region_name=region_name,
             endpoint_url='https://logs.'+ region_name +'.amazonaws.com')
-    
+
         spin = ['-', '/', '|', '\\', '-', '/', '|', '\\']
         logGroupName = '/aws/batch/job'
-    
+
         jobName = content['jobName']
         jobQueue = content['jobQueue']
         jobDefinition = content['jobDefinition']
@@ -54,14 +60,14 @@ def lambda_handler(event, context):
             jobQueue=jobQueue,
             jobDefinition=jobDefinition,
             containerOverrides={
-                'command': command, 
+                'command': command,
                 'environment': envlist
             }
         )
 
         jobId = submitJobResponse['jobId']
         print ('Submitted job [%s - %s] to the job queue [%s]' % (jobName, jobId, jobQueue))
-    
+
         spinner = 0
         running = False
         startTime = 0
@@ -85,12 +91,13 @@ def lambda_handler(event, context):
             else:
                 print ('\rJob [%s - %s] is %-9s... %s' % (jobName, jobId, status, spin[spinner % len(spin)]), sys.stdout.flush())
                 spinner += 1
-        
+
         return response['ContentType']
     except Exception as e:
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
+
 
 def printLogs(logGroupName, logStreamName, startTime):
     kwargs = {'logGroupName': logGroupName,
@@ -138,10 +145,6 @@ def createEnvList(content):
             value = env['value']
             region = {'name': 'AWS_REGION', 'value': value}
             envlist.append(region)
-        elif env['name'] == 'COLLECTION_NAME':
-            value = env['value']
-            collection_name = {'name': 'COLLECTION_NAME', 'value': value}
-            envlist.append(collection_name)
         elif env['name'] == 'UPLOAD_BOOL':
             value = env['value']
             upload = {'name': 'UPLOAD_BOOL', 'value': value}
@@ -170,17 +173,9 @@ def createEnvList(content):
             value = env['value']
             dest_bucket = {'name': 'DEST_BUCKET', 'value': value}
             envlist.append(dest_bucket)
-        elif env['name'] == 'DEST_PREFIX':
-            value = env['value']
-            dest_prefix = {'name': 'DEST_PREFIX', 'value': value}
-            envlist.append(dest_prefix)
         elif env['name'] == 'DEST_URL':
             value = env['value']
             dest_url = {'name': 'DEST_URL', 'value': value}
             envlist.append(dest_url)
-        elif env['name'] == 'DIR_PREFIX':
-            value = env['value']
-            dir_prefix = {'name': 'DIR_PREFIX', 'value': value}
-            envlist.append(dir_prefix)
 
     return envlist

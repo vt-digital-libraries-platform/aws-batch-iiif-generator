@@ -1,7 +1,7 @@
 {
    "jobName":"job1",
-   "jobQueue":"iiifjq",
-   "jobDefinition":"iiifjd:3",
+   "jobQueue":"IIIFS3JobQueue",
+   "jobDefinition":"IIIFS3JobDefinition:1",
    "command":"./createiiif.sh",
    "environment":[
       {
