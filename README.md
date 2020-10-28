@@ -54,6 +54,8 @@ See [Cloudformation: create stack](https://docs.aws.amazon.com/cli/latest/refere
 * Prepare [task.json](examples/task.json) 
 * Upload [task.json](examples/task.json) to the S3 bucket created after the deployment.
 * Go to `AWS_BUCKET_NAME` to see the end results for generated IIIF tiles and manifests.
+* Test manifests in [Mirador](https://projectmirador.org/demo/) (Note: you need to configure S3 access permission and CORS settings)
+* See our [Live Demo](https://d2fmsr62h737j1.cloudfront.net/index.html)
 
 ### Cleanup
 
