@@ -23,7 +23,7 @@ Click *Next* to continue
 #### Step 2: Specify stack details
 
 | Name | Description |
-|----------|:-------------:|
+|----------|-------------|
 | Stack name | any valid name |
 | BatchRepositoryName | any valid name for Batch process repository |
 | DockerImage | any valid Docker image. E.g. yinlinchen/vtl:iiifs3_v3 |
@@ -51,7 +51,8 @@ aws cloudformation create-stack --stack-name awsiiifs3batch --template-body file
 See [Cloudformation: create stack](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/create-stack.html) for `--parameters` option
 
 ### Usage
-* Prepare [task.json](examples/task.json) 
+* Prepare [task.json](examples/task.json)
+* Prepare [dataset](examples/sample_dataset.zip) and upload to S3 `SRC_BUCKET` bucket
 * Upload [task.json](examples/task.json) to the S3 bucket created after the deployment.
 * Go to `AWS_BUCKET_NAME` to see the end results for generated IIIF tiles and manifests.
 * Test manifests in [Mirador](https://projectmirador.org/demo/) (Note: you need to configure S3 access permission and CORS settings)
@@ -81,21 +82,22 @@ aws cloudformation delete-stack --stack-name stackname
 
 ## Task File
 * example: [task.json](examples/task.json)
-```
-    jobName: Batch job name
-    jobQueue: Batch job queue name
-    jobDefinition: Batch job definition name
-    command: "./createiiif.sh"
-    AWS_REGION: AWS region, e.g. us-east-1
-    SRC_BUCKET: S3 bucket which stores the images need to be processed. (Source S3 bucket)
-    AWS_BUCKET_NAME: S3 bucket which stores the generated tile images and manifests files. (Target S3 bucket)
-    ACCESS_DIR: Path to the image folder under the SRC_BUCKET
-    CSV_NAME: A CSV file with title and description of the images
-    CSV_PATH: Path to the csv folder under the SRC_BUCKET
-    DEST_BUCKET: Folder to store the generated tile images and manifests files under AWS_BUCKET_NAME
-    DEST_URL: Root URL for accessing the manifests e.g. https://s3.amazonaws.com/AWS_BUCKET_NAME
-    UPLOAD_BOOL: upload tiles and manifests to S3 (true|false)
-```
+
+| Name | Description |
+|----------|-------------|
+| jobName | Batch job name |
+| jobQueue | Batch job queue name |
+| jobDefinition | Batch job definition name |
+| command | "./createiiif.sh" |
+| AWS_REGION | AWS region, e.g. us-east-1 |
+| SRC_BUCKET | S3 bucket which stores the images need to be processed. (Source S3 bucket) |
+| AWS_BUCKET_NAME | S3 bucket which stores the generated tile images and manifests files. (Target S3 bucket) |
+| ACCESS_DIR | Path to the image folder under the SRC_BUCKET |
+| CSV_NAME | A CSV file with title and description of the images |
+| CSV_PATH | Path to the csv folder under the SRC_BUCKET |
+| DEST_BUCKET | Folder to store the generated tile images and manifests files inside `AWS_BUCKET_NAME` |
+| DEST_URL | Root URL for accessing the manifests e.g. https://s3.amazonaws.com/AWS_BUCKET_NAME |
+| UPLOAD_BOOL | Default is `false`. Set it to `true` if you want to use upload_to_s3 [iiifS3](https://github.com/cmoa/iiif_s3) feature and use your customized docker image. |
 
 ## IIIF S3 Docker image
 * [iiif_s3_docker](https://github.com/vt-digital-libraries-platform/iiif_s3_docker)
