@@ -1,0 +1,252 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Orchestrating an Application Process with AWS Batch using CloudFormation
+Parameters:
+  DockerImage:
+    Description: Docker image or a repository from a registry
+    Default: yinlinchen/vtl:iiifs3_v3
+    Type: String
+  JDName:
+    Description: Job definition name
+    Default: IIIFS3JobDefinition
+    Type: String
+  JQName:
+    Description: Job queue name
+    Default: IIIFS3JobQueue
+    Type: String
+  LambdaRoleName:
+    Description: Lambda role name
+    Default: lambda-role
+    Type: String
+  LambdaFunctionName:
+    Description: Lambda function name
+    Default: BatchProcessingLambdaInvokeFunction
+    Type: String
+  BatchRepositoryName:
+    Description: Batch process repository name
+    Default: batch-processing-job-repository
+    Type: String
+  S3BucketName:
+    Description: S3 bucket name
+    Default: batch-processing-job
+    Type: String
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EC2 Security Group for instances launched in the VPC by Batch
+      VpcId:
+        Ref: VPC
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId:
+        Ref: VPC
+      MapPublicIpOnLaunch: 'True'
+  Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      SubnetId:
+        Ref: Subnet
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${LambdaRoleName}
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AWSLambdaExecute
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - arn:aws:iam::aws:policy/AWSBatchFullAccess
+      - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+      Path: /
+  BatchServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: batch.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+      - Ref: EcsInstanceRole
+  EcsInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+  BatchProcessingJobDefinition:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      Type: container
+      JobDefinitionName:
+        Ref: JDName
+      ContainerProperties:
+        Image:
+          Ref: DockerImage
+        Vcpus: 2
+        Memory: 2000
+        Command:
+        - ./createiiif.sh
+      RetryStrategy:
+        Attempts: 1
+  BatchProcessingJobQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName:
+        Ref: JQName
+      Priority: 10
+      ComputeEnvironmentOrder:
+      - Order: 1
+        ComputeEnvironment:
+          Ref: ComputeEnvironment
+  ComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      Type: MANAGED
+      ComputeResources:
+        Type: EC2
+        MinvCpus: 0
+        DesiredvCpus: 0
+        MaxvCpus: 128
+        InstanceTypes:
+        - optimal
+        Subnets:
+        - Ref: Subnet
+        SecurityGroupIds:
+        - Ref: SecurityGroup
+        InstanceRole:
+          Ref: IamInstanceProfile
+      ServiceRole:
+        Ref: BatchServiceRole
+  BatchProcessS3Bucket:
+    Type: AWS::S3::Bucket
+    DependsOn: BatchProcessBucketPermission
+    Properties:
+      BucketName:
+        Fn::Sub: ${S3BucketName}-${AWS::AccountId}
+      NotificationConfiguration:
+        LambdaConfigurations:
+        - Event: s3:ObjectCreated:*
+          Function:
+            Fn::GetAtt:
+            - BatchProcessingLambdaInvokeFunction
+            - Arn
+  BatchProcessBucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: BatchProcessingLambdaInvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount:
+        Ref: AWS::AccountId
+      SourceArn:
+        Fn::Sub: arn:aws:s3:::${S3BucketName}-${AWS::AccountId}
+  BatchProcessingLambdaInvokeFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Ref: LambdaFunctionName
+      Description: Python Function Handler that would be triggered BY s3 events TO
+        the aws batch
+      Handler: index.lambda_handler
+      Runtime: python3.6
+      MemorySize: 128
+      Timeout: 30
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      Code:
+        S3Bucket: iiif-code
+        S3Key: 1be832cac16b3fb8317111059c1172ed
+  BatchProcessRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName:
+        Ref: BatchRepositoryName
+      RepositoryPolicyText:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AllowPushPull
+          Effect: Allow
+          Principal:
+            AWS:
+            - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/${EcsInstanceRole}
+          Action:
+          - ecr:GetDownloadUrlForLayer
+          - ecr:BatchGetImage
+          - ecr:BatchCheckLayerAvailability
+          - ecr:PutImage
+          - ecr:InitiateLayerUpload
+          - ecr:UploadLayerPart
+          - ecr:CompleteLayerUpload
+Outputs:
+  ComputeEnvironmentArn:
+    Value:
+      Ref: ComputeEnvironment
+  BatchProcessingJobQueueArn:
+    Value:
+      Ref: BatchProcessingJobQueue
+  BatchProcessingJobDefinitionArn:
+    Value:
+      Ref: BatchProcessingJobDefinition
+  BucketName:
+    Value:
+      Ref: BatchProcessS3Bucket
+  LambdaName:
+    Value:
+      Ref: BatchProcessingLambdaInvokeFunction
