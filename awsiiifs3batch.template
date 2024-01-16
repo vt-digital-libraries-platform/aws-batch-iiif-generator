@@ -3,7 +3,7 @@ Description: Orchestrating an Application Process with AWS Batch using CloudForm
 Parameters:
   DockerImage:
     Description: Docker image or a repository from a registry
-    Default: yinlinchen/vtl:iiifs3_v3
+    Default: wlhunter/iiif_s3_tiling:latest
     Type: String
   JDName:
     Description: Job definition name
@@ -27,7 +27,7 @@ Parameters:
     Type: String
   S3BucketName:
     Description: S3 bucket name
-    Default: batch-processing-job
+    Default: vtdlp-tiling-batch-deposit
     Type: String
 Resources:
   VPC:
@@ -203,7 +203,7 @@ Resources:
       Description: Python Function Handler that would be triggered BY s3 events TO
         the aws batch
       Handler: index.lambda_handler
-      Runtime: python3.6
+      Runtime: python3.9
       MemorySize: 128
       Timeout: 30
       Role:
@@ -211,8 +211,8 @@ Resources:
         - LambdaExecutionRole
         - Arn
       Code:
-        S3Bucket: iiif-code
-        S3Key: 1be832cac16b3fb8317111059c1172ed
+        S3Bucket: vtlib-cf-template
+        S3Key: dev/lambda-scripts/aws-batch-iiif-generator/20240118/e8d3b3d262ee42e5b3986d95645528ca
   BatchProcessRepository:
     Type: AWS::ECR::Repository
     Properties:
