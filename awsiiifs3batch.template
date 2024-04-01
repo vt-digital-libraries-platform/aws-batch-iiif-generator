@@ -136,8 +136,8 @@ Resources:
       ContainerProperties:
         Image:
           Ref: DockerImage
-        Vcpus: 2
-        Memory: 2000
+        Vcpus: 4
+        Memory: 8000
         Command:
         - ./createiiif.sh
       RetryStrategy:
@@ -147,7 +147,7 @@ Resources:
     Properties:
       JobQueueName:
         Ref: JQName
-      Priority: 10
+      Priority: 1
       ComputeEnvironmentOrder:
       - Order: 1
         ComputeEnvironment:
@@ -160,9 +160,9 @@ Resources:
         Type: EC2
         MinvCpus: 0
         DesiredvCpus: 0
-        MaxvCpus: 128
+        MaxvCpus: 256
         InstanceTypes:
-        - optimal
+        - i3.xlarge
         Subnets:
         - Ref: Subnet
         SecurityGroupIds:
