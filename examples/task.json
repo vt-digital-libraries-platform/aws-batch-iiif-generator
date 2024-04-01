@@ -1,44 +1,26 @@
 {
-   "jobName":"job1",
-   "jobQueue":"IIIFS3JobQueue",
-   "jobDefinition":"IIIFS3JobDefinition:1",
-   "command":"./createiiif.sh",
-   "environment":[
-      {
-         "name":"UPLOAD_BOOL",
-         "value":"false"
-      },
-      {
-         "name":"AWS_REGION",
-         "value":"us-east-1"
-      },
-      {
-         "name":"SRC_BUCKET",
-         "value":"iawa-sample-data"
-      },
-      {
-         "name":"AWS_BUCKET_NAME",
-         "value":"iawa-target-data"
-      },
-      {
-         "name":"CSV_NAME",
-         "value":"Ms2016_012_Box2.csv"
-      },
-      {
-         "name":"ACCESS_DIR",
-         "value":"Women_of_Design/Ms2016_012_Womens_Development_Corp/Box2/Box2_Folder19_Synopsis/Access/"
-      },
-      {
-         "name":"CSV_PATH",
-         "value":"Women_of_Design/Ms2016_012_Womens_Development_Corp/CSV_to_upload/CSV_spreadsheets/"
-      },
-      {
-         "name":"DEST_BUCKET",
-         "value":"iiifs3"
-      },
-      {
-         "name":"DEST_URL",
-         "value":"https://s3.amazonaws.com/iawa-target-data"
-      }
-   ]
+  "jobName": "job1",
+  "jobQueue": "IIIFS3JobQueue",
+  "jobDefinition": "IIIFS3JobDefinition",
+  "command": "./createiiif.sh",
+  "environment": [
+    { "name": "AWS_REGION", "value": "us-east-1" },
+    {
+      "name": "COLLECTION_IDENTIFIER",
+      "value": "Ms2016_012_Womens_Development_Corp_Box2"
+    },
+    {
+      "name": "ACCESS_DIR",
+      "value": "Women_of_Design/Ms2016_012_Womens_Development_Corp_Box2/Box2_Folder19_Synopsis/Access"
+    },
+    { "name": "AWS_SRC_BUCKET", "value": "ingest-dev-vtlib-store" },
+    { "name": "AWS_DEST_BUCKET", "value": "ingest-dev.img.cloud.lib.vt.edu" },
+    { "name": "DEST_PREFIX", "value": "iawa/Women_of_Design" },
+    { "name": "DEST_URL", "value": "https://d21nnzi4oh5qvs.cloudfront.net" },
+    {
+      "name": "CSV_PATH",
+      "value": "Women_of_Design/Ms2016_012_Womens_Development_Corp_Box2/CSV_to_upload/CSV_spreadsheets"
+    },
+    { "name": "CSV_NAME", "value": "Ms2016_012_Box2.csv" }
+  ]
 }
