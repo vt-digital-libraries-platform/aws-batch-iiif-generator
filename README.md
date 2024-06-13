@@ -23,7 +23,7 @@
 
 #### Step 1: Launch CloudFormation stack
 
-[![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://vtlib-cf-template.s3.amazonaws.com/prod/cf-templates/aws-batch-iiif-generator/20240612/awsiiifs3batch.template)
+[![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://vtlib-cf-template.s3.amazonaws.com/prod/cf-templates/aws-batch-iiif-generator/20240605/awsiiifs3batch.template)
 
 Click _Next_ to continue
 
