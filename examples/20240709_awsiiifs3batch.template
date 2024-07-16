@@ -138,7 +138,7 @@ Resources:
           Ref: DockerImage
         ResourceRequirements: 
           - Type: MEMORY
-            Value: '16384'
+            Value: '12000'
           - Type: VCPU
             Value: '8'
         Command:
@@ -150,7 +150,7 @@ Resources:
     Properties:
       JobQueueName:
         Ref: JQName
-      Priority: 10
+      Priority: 100
       ComputeEnvironmentOrder:
       - Order: 1
         ComputeEnvironment:
@@ -165,7 +165,7 @@ Resources:
         DesiredvCpus: 0
         MaxvCpus: 128
         InstanceTypes:
-        - c7g.2xlarge
+        - c5a.2xlarge
         Subnets:
         - Ref: Subnet
         SecurityGroupIds:

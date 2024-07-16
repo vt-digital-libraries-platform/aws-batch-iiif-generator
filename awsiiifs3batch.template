@@ -165,7 +165,7 @@ Resources:
         DesiredvCpus: 0
         MaxvCpus: 128
         InstanceTypes:
-        - c5.2xlarge
+        - c5a.2xlarge
         Subnets:
         - Ref: Subnet
         SecurityGroupIds:
