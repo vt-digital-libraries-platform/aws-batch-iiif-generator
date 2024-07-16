@@ -137,6 +137,8 @@ Resources:
         Image:
           Ref: DockerImage
         ResourceRequirements: 
+          - Type: MEMORY
+            Value: '16384'
           - Type: VCPU
             Value: '8'
         Command:
