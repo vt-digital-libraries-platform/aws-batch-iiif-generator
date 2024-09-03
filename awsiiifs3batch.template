@@ -172,12 +172,12 @@ Resources:
         - Ref: SecurityGroup
         InstanceRole:
           Ref: IamInstanceProfile
+        LaunchTemplate:
+          LaunchTemplateId: lt-062d267fcd0fbba7d
+          LaunchTemplateName: increase-tilng-storage
+          Version: 1
       ServiceRole:
         Ref: BatchServiceRole
-      LaunchTemplate:
-        LaunchTemplateId: lt-062d267fcd0fbba7d
-        LaunchTemplateName: increase-tilng-storage
-        Version: 1
   BatchProcessS3Bucket:
     Type: AWS::S3::Bucket
     DependsOn: BatchProcessBucketPermission
