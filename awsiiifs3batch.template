@@ -163,9 +163,9 @@ Resources:
         Type: EC2
         MinvCpus: 0
         DesiredvCpus: 0
-        MaxvCpus: 128
+        MaxvCpus: 32
         InstanceTypes:
-        - c5a.2xlarge
+        - d3.8xlarge
         Subnets:
         - Ref: Subnet
         SecurityGroupIds:
@@ -174,6 +174,10 @@ Resources:
           Ref: IamInstanceProfile
       ServiceRole:
         Ref: BatchServiceRole
+      LaunchTemplate:
+        LaunchTemplateId: lt-062d267fcd0fbba7d
+        LaunchTemplateName: increase-tilng-storage
+        Version: 1
   BatchProcessS3Bucket:
     Type: AWS::S3::Bucket
     DependsOn: BatchProcessBucketPermission
