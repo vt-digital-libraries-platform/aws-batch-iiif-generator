@@ -173,9 +173,8 @@ Resources:
         InstanceRole:
           Ref: IamInstanceProfile
         LaunchTemplate:
-          LaunchTemplateId: lt-062d267fcd0fbba7d
           LaunchTemplateName: increase-tilng-storage
-          Version: 1
+          Version: '1'
       ServiceRole:
         Ref: BatchServiceRole
   BatchProcessS3Bucket:
